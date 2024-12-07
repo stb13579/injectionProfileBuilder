@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Card, CardHeader, CardTitle, CardContent } from './components/ui/card';
 
 const ChatbotInterface = () => {
-  // State to manage user input and chat history
   const [userMessage, setUserMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
 
-  // Handle user input submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Prevent empty submissions
     if (!userMessage.trim()) return;
 
-    // Add user message to chat history
     const newChatHistory = [...chatHistory, { 
       type: 'user', 
       content: userMessage 
@@ -31,13 +30,11 @@ const ChatbotInterface = () => {
 
       const data = await response.json();
 
-      // Add bot response to chat history
       setChatHistory(prevHistory => [...prevHistory, { 
         type: 'bot', 
         content: data.reply 
       }]);
 
-      // Clear input after submission
       setUserMessage('');
     } catch (error) {
       console.error('Error communicating with backend:', error);
@@ -48,35 +45,25 @@ const ChatbotInterface = () => {
     }
   };
 
-  // Render chat messages, handling different content types
-  const renderChatContent = (message) => {
-    // Check if message or content is undefined
-    if (!message || !message.content) {
-      return <p>No content available</p>;
-    }
-  
-    // Check if the content looks like code
-    if (typeof message.content === 'string' && message.content.includes('```')) {
-      return (
-        <pre className="bg-gray-100 p-2 rounded-md overflow-x-auto">
-          <code>{message.content.replace(/```/g, '')}</code>
-        </pre>
+  // Custom markdown components
+  const MarkdownComponents = {
+    code({ node, inline, className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className || '');
+      return !inline && match ? (
+        <SyntaxHighlighter
+          style={materialDark}
+          language={match[1]}
+          PreTag="div"
+          {...props}
+        >
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
       );
-    }
-    
-    // Check if the content is a base64 encoded image (for graphs)
-    if (typeof message.content === 'string' && message.content.startsWith('data:image')) {
-      return (
-        <img 
-          src={message.content} 
-          alt="Generated Graph" 
-          className="max-w-full h-auto"
-        />
-      );
-    }
-    
-    // Plain text fallback
-    return <p>{message.content}</p>;
+    },
   };
 
   return (
@@ -86,19 +73,28 @@ const ChatbotInterface = () => {
       </CardHeader>
       <CardContent>
         {/* Chat History Display */}
-        <div className="mb-4 max-h-96 overflow-y-auto">
+        <div className="mb-4 max-h-96 overflow-y-auto space-y-4">
           {chatHistory.map((message, index) => (
             <div 
               key={index} 
-              className={`mb-2 p-2 rounded-md ${
+              className={`p-3 rounded-lg ${
                 message.type === 'user' 
-                  ? 'bg-blue-100 text-right' 
+                  ? 'bg-blue-50 text-right' 
                   : message.type === 'error' 
-                  ? 'bg-red-100' 
-                  : 'bg-green-100'
+                  ? 'bg-red-50' 
+                  : 'bg-green-50'
               }`}
             >
-              {renderChatContent(message)}
+              <ReactMarkdown 
+                components={MarkdownComponents}
+                className={`prose ${
+                  message.type === 'user' 
+                    ? 'text-right' 
+                    : 'text-left'
+                }`}
+              >
+                {message.content}
+              </ReactMarkdown>
             </div>
           ))}
         </div>
