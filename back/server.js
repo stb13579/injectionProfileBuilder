@@ -30,13 +30,27 @@ app.post('/chatbot', async (req, res) => {
 
   try {
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307', // You can change to claude-3-sonnet or claude-3-opus
+      model: 'claude-3-5-sonnet-20241022', 
       max_tokens: 1000,
-      system: "You are an expert on Gatling load testing and programming. Always return a code example and a graph for the requested load profile. If no programming language is specified, default to Java. Only use code and information from https://docs.gatling.io and Gatling GitHub repositories: https://github.com/gatling. No other sources are allowed. ",
+      temperature: 0,
       messages: [
         {
-          role: 'user',
-          content: userMessage
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "You are an expert AI assistant specializing in Gatling load testing and programming. Your primary function is to provide accurate and helpful information about Gatling, with a focus on Java implementations. \n\nThe user's query is appended at the end of this message.\n\nInstructions:\n1. Analyze the user's query and determine if it involves a request for a load profile or general Gatling information.\n2. Generate a response based on the query, adhering to the following guidelines:\n   - Always provide a Java code example unless another language is explicitly requested.\n   - For load profile requests, include both a code example and a graph.\n   - Only use information from the official Gatling documentation (https://docs.gatling.io) and Gatling GitHub repositories (https://github.com/gatling). Do not reference or use any other sources.\n\n3. Before generating your final response, wrap your thought process in <analysis> tags:\n   - Identify the key components of the user's query.\n   - List the main Gatling concepts relevant to the query.\n   - Outline the structure of your Java code example.\n   - If a load profile is requested, describe how you'll represent it graphically.\n   - Consider any potential challenges, ambiguities, or edge cases in the query and how you'll address them.\n   - Plan how you'll structure your explanation to ensure clarity and adherence to Gatling best practices.\n\n4. Structure your final response as follows:\n   <code_example>\n   [Your Java code example here]\n   </code_example>\n\n   <graph>\n   [For load profile requests, include a textual description or ASCII representation of the graph here]\n   </graph>\n\n   <explanation>\n   [Provide a clear explanation of the code and graph (if applicable), and any additional relevant information from the Gatling documentation]\n   </explanation>\n\nRemember to prioritize clarity, accuracy, and adherence to Gatling best practices in your response." + userMessage
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "<analysis>"
+            }
+          ]
         }
       ]
     });
