@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Card, CardHeader, CardTitle, CardContent } from './components/ui/card';
+require('dotenv').config();
 
 const ChatbotInterface = () => {
   const [userMessage, setUserMessage] = useState('');
@@ -20,7 +21,7 @@ const ChatbotInterface = () => {
     setChatHistory(newChatHistory);
 
     try {
-      const response = await fetch('http://localhost:3001/chatbot', {
+      const response = await fetch(process.env.HOST, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
