@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Card, CardHeader, CardTitle, CardContent } from './components/ui/card';
-require('dotenv').config();
+
 
 const ChatbotInterface = () => {
   const [userMessage, setUserMessage] = useState('');
@@ -21,7 +21,7 @@ const ChatbotInterface = () => {
     setChatHistory(newChatHistory);
 
     try {
-      const response = await fetch(process.env.HOST, {
+      const response = await fetch(import.meta.env.VITE_HOST, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const ChatbotInterface = () => {
 
   // Custom markdown components
   const MarkdownComponents = {
-    code({ node, inline, className, children, ...props }) {
+    code({ inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || '');
       return !inline && match ? (
         <SyntaxHighlighter

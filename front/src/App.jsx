@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import React from 'react';
 import ChatbotInterface from './ChatbotInterface';
 import './index.css';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
