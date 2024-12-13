@@ -3,12 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  
-    "scripts": {
+  "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && vite preview"
+    "start": "vite preview"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
@@ -27,6 +26,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
+    "serve": "^14.2.4",
     "vite": "^6.0.1"
   }
 }
