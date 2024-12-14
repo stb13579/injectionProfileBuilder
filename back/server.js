@@ -4,23 +4,22 @@ const Anthropic = require('@anthropic-ai/sdk');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.HOST || 3001;
+const port = process.env.PORT || 3001;
 
-// Enable cors for all routes
-app.use(cors());
+// Configure CORS with dynamic origin
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+}));
 
 // Middleware for parsing JSON requests
 app.use(express.json());
 
 // Set up Anthropic configuration
 const anthropic = new Anthropic({
-  apiKey: process.env.CLAUDE_API_KEY, // Store your Anthropic API key in the .env file
+  apiKey: process.env.CLAUDE_API_KEY,
 });
 
-// Handle pre-flight requests
-app.options('/chatbot', cors());
-
-// Define the chatbot endpoint
+// Chatbot endpoint (rest of the code remains the same)
 app.post('/chatbot', async (req, res) => {
   const userMessage = req.body.message;
 
@@ -69,6 +68,6 @@ app.post('/chatbot', async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Chatbot API is running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Chatbot API is running on port ${port}`);
 });
