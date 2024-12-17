@@ -1,6 +1,8 @@
 # injectionProfileBuilder
 A chatbot to help you model and build injection profiles for Gatling load tests
 
+## WIP - NOT FUNCTIONAL RIGHT NOW
+
 ## Requirements
 
 - An Anthropic account with an API token
